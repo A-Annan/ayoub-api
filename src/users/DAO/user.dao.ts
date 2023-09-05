@@ -38,7 +38,7 @@ export class UserDAO {
       },
       {
         $sort: {
-          [options.sort || 'name']: 1,
+          [options.sort || '_id']: -1,
         },
       },
       {
