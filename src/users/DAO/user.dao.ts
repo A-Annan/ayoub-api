@@ -2,11 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schemas';
 import { Model, QueryOptions } from 'mongoose';
+import { Project } from 'src/projects/Schema/project.schema';
 
 @Injectable()
 export class UserDAO {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
+  addProject(id: string, project: Project) {
+    return this.userModel.updateOne(
+      { _id: id },
+      { $push: { projects: project._id } },
+    );
+  }
   findAll(options: QueryOptions) {
     return this.userModel.aggregate([
       {

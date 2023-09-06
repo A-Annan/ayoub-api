@@ -10,10 +10,16 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { User } from '../schemas/user.schemas';
+import { Project } from 'src/projects/Schema/project.schema';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @Post(':id/project')
+  addProject(@Param('id') id: string, @Body('project') data: Project) {
+    return this.userService.addProject(id, data);
+  }
 
   @Get()
   findAll(
