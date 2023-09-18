@@ -15,8 +15,9 @@ export class UserService {
     const project = await this.projectService.create(data);
     return this.userDAO.addProject(id, project);
   }
-  findAll(options: queryOptions = {}) {
-    return this.userDAO.findAll(options);
+  async findAll(options: queryOptions = {}) {
+    const result = await this.userDAO.findAll(options);
+    return { docs: result[0].docs, meta: result[0].meta[0] };
   }
   create(data: User) {
     return this.userDAO.create(data);

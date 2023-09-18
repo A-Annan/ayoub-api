@@ -6,7 +6,7 @@ import { Project } from 'src/projects/Schema/project.schema';
 
 @Injectable()
 export class UserDAO {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   addProject(id: string, project: Project) {
     return this.userModel.updateOne(
