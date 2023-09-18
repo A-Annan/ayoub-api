@@ -6,7 +6,7 @@ import { Project } from 'src/projects/Schema/project.schema';
 
 @Injectable()
 export class UserDAO {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   addProject(id: string, project: Project) {
     return this.userModel.updateOne(
@@ -43,16 +43,33 @@ export class UserDAO {
       {
         $match: options.filter || {},
       },
+
       {
-        $sort: {
-          [options.sort || '_id']: -1,
+        $facet: {
+          meta: [
+            { $count: 'totalDocs' },
+            {
+              $addFields: {
+                page: options.page || 1,
+                limit: options.limit || 10,
+                totalPages: {
+                  $ceil: {
+                    $divide: ['$totalDocs', options.limit || 10],
+                  },
+                },
+              },
+            },
+          ],
+          docs: [
+            {
+              $sort: options.sort || { _id: -1 },
+            },
+            {
+              $skip: ((options.page || 1) - 1) * options.limit || 0,
+            },
+            { $limit: options.limit || 10 },
+          ],
         },
-      },
-      {
-        $skip: options.limit * (options.page - 1) || 0,
-      },
-      {
-        $limit: options.limit || 10,
       },
     ]);
   }
